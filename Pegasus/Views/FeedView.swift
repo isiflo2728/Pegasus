@@ -51,7 +51,7 @@ enum ActivityCard: Identifiable {
 }
 
 let mockActivityCards: [ActivityCard] = [
-    .running(user: "Kai Nakamura", avatarColor: .orange, distance: "4.2 mi", pace: "7'42\"", durastion: "32:24", heartRate: 158, ringProgress: 0.78),
+    .running(user: "Kai Nakamura", avatarColor: .orange, distance: "4.2 mi", pace: "7'42\"", duration: "32:24", heartRate: 158, ringProgress: 0.78),
     .listening(user: "Mara Solis", avatarColor: .pink, song: "Nights", artist: "Frank Ocean", album: "Blonde", albumColor: Color(red: 0.85, green: 0.75, blue: 0.6)),
     .onMac(user: "Dev Patel", avatarColor: .teal, app: "Xcode", timeAgo: "3m ago"),
     .watching(user: "Lena Fischer", avatarColor: .purple, title: "Severance", episode: "S2 · E6", artColor: Color(red: 0.15, green: 0.15, blue: 0.35)),
