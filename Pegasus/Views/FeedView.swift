@@ -31,8 +31,6 @@ let mockActivityCards: [any ActivityProtocol] = [
 
 // MARK: - FeedView
 
-
-
 struct FeedView: View {
     @State private var selectedFeed = 0
 

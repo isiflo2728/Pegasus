@@ -5,33 +5,6 @@
 //  Created by Isidoro Flores on 3/10/26.
 //
 
-//Custom Tab Bar testing
-
-
-enum CustomTab: String, CaseIterable, Hashable {
-    case home = "Home"
-    case messages = "Messages"
-    case searchs = "Search"
-
-    var symbol: String {
-        switch self {
-        case .home: return "house"
-        case .messages: return "message"
-        case .searchs: return "magnifyingglass"
-        }
-    }
-    var actionSymbol: String {
-        switch self{
-        case .home: return "plus"
-        case .messages: return "square.and.pencil"
-        case .searchs: return "line.3.horizontal.decrease.circle"
-        }
-    }
-    var index: Int {
-        Self.allCases.firstIndex(of: self) ?? 0
-    }
-}
-
 import SwiftUI
 
 struct HomeView: View {
@@ -42,34 +15,22 @@ struct HomeView: View {
 
     var body: some View {
         TabView(selection: $activeTab) {
-            Tab.init(value: .home){
-                FeedView()
-                //add this to every view
-                .safeAreaBar(edge: .bottom, spacing: 0, content: {
-                    Text(".")
-                        .blendMode(.destinationOver)
-                        .frame(height: 55)
-                })
-                    .toolbarVisibility(.hidden, for: .tabBar)
+            Group {
+                switch activeTab {
+                case .home:
+                    FeedView()
+                case .messages:
+                    MessageView()
+                case .searchs:
+                    SearchView()
+                }
             }
-            Tab.init(value: .messages){
-                MessageView()
-                .safeAreaBar(edge: .bottom, spacing: 0, content: {
-                    Text(".")
-                        .blendMode(.destinationOver)
-                        .frame(height: 55)
-                })
-                    .toolbarVisibility(.hidden, for: .tabBar)
-            }
-            Tab.init(value: .searchs){
-                SearchView()
-                .safeAreaBar(edge: .bottom, spacing: 0, content: {
-                    Text(".")
-                        .blendMode(.destinationOver)
-                        .frame(height: 55)
-                })
-                    .toolbarVisibility(.hidden, for: .tabBar)
-            }
+            .safeAreaBar(edge: .bottom, spacing: 0, content: {
+                Text(".")
+                    .blendMode(.destinationOver)
+                    .frame(height: 55)
+            })
+            .toolbarVisibility(.hidden, for: .tabBar)
         }
         .safeAreaInset(edge: .bottom, spacing: 0){
             CustomTabBarView()
