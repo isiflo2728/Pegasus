@@ -399,6 +399,7 @@ struct PostRow: View {
                 .onTapGesture(count: 2) {
                     liked.toggle()
                 }
+                .sensoryFeedback(.impact(weight: .medium), trigger: liked)
                 
                 // Action bar
                 // Keeping the action bar seperate from the double tap container removes the delayed interaction
