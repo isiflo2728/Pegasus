@@ -353,46 +353,55 @@ struct PostRow: View {
                 )
 
             VStack(alignment: .leading, spacing: 4) {
-
-                // Name + handle + time
-                HStack(spacing: 4) {
-                    Text(post.username)
-                        .font(.system(size: 15, weight: .semibold))
-                    Text("·")
-                        .foregroundStyle(.tertiary)
-                    Text(post.timeAgo)
-                        .font(.system(size: 14))
-                        .foregroundStyle(.secondary)
-                    Spacer()
-                    Button {
-                    } label: {
-                        Image(systemName: "ellipsis")
+                
+                // Seperated the main content from the post action buttons
+                // Keeping the double tap over the entire container causes the main like button itself to have a slight delay in the animation
+                VStack(alignment: .leading, spacing: 4) {
+                    
+                    // Name + handle + time
+                    HStack(spacing: 4) {
+                        Text(post.username)
+                            .font(.system(size: 15, weight: .semibold))
+                        Text("·")
+                            .foregroundStyle(.tertiary)
+                        Text(post.timeAgo)
                             .font(.system(size: 14))
                             .foregroundStyle(.secondary)
+                        Spacer()
+                        Button {
+                        } label: {
+                            Image(systemName: "ellipsis")
+                                .font(.system(size: 14))
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    
+                    // Post content
+                    Text(post.content)
+                        .font(.system(size: 15))
+                        .foregroundStyle(.primary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    
+                    // Photo (if post has one)
+                    if let colors = post.imageColors {
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .fill(LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing))
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 180)
+                            .overlay(
+                                Image(systemName: "photo")
+                                    .font(.system(size: 32, weight: .light))
+                                    .foregroundStyle(.white.opacity(0.6))
+                            )
+                            .padding(.top, 4)
                     }
                 }
-
-                // Post content
-                Text(post.content)
-                    .font(.system(size: 15))
-                    .foregroundStyle(.primary)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                // Photo (if post has one)
-                if let colors = post.imageColors {
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing))
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 180)
-                        .overlay(
-                            Image(systemName: "photo")
-                                .font(.system(size: 32, weight: .light))
-                                .foregroundStyle(.white.opacity(0.6))
-                        )
-                        .padding(.top, 4)
+                .onTapGesture(count: 2) {
+                    liked.toggle()
                 }
-
+                
                 // Action bar
+                // Keeping the action bar seperate from the double tap container removes the delayed interaction
                 HStack(spacing: 32) {
                     ActionButton(icon: "bubble.left", count: post.replies, active: false, activeColor: .blue) {}
 
@@ -401,8 +410,11 @@ struct PostRow: View {
                     }
 
                     ActionButton(icon: liked ? "heart.fill" : "heart", count: post.likes + (liked ? 1 : 0), active: liked, activeColor: .red) {
-                        liked.toggle()
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0)) {
+                            liked.toggle()
+                        }
                     }
+                    .sensoryFeedback(.impact(weight: .medium), trigger: liked)
 
                     Spacer()
 
@@ -434,9 +446,10 @@ struct ActionButton: View {
         Button(action: action) {
             HStack(spacing: 4) {
                 Image(systemName: icon)
-                    .font(.system(size: 15))
+                    .contentTransition(.symbolEffect(.replace))
+                    .symbolEffect(.bounce, value: active)
                 Text(count.formatted())
-                    .font(.system(size: 13))
+                    .font(.system(size: 14))
                     .contentTransition(.numericText())
             }
             .foregroundStyle(active ? activeColor : .secondary)
