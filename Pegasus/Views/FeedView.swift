@@ -405,9 +405,9 @@ struct PostRow: View {
                 HStack(spacing: 32) {
                     ActionButton(icon: "bubble.left", count: post.replies, active: false, activeColor: .blue) {}
 
-                    ActionButton(icon: "arrow.2.squarepath", count: post.reposts, active: reposted, activeColor: .green) {
+                    ActionButton(icon: "arrow.2.squarepath", count: post.reposts + (reposted ? 1 : 0), active: reposted, activeColor: .green, action:  {
                         reposted.toggle()
-                    }
+                    }, rotates: reposted)
 
                     ActionButton(icon: liked ? "heart.fill" : "heart", count: post.likes + (liked ? 1 : 0), active: liked, activeColor: .red) {
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0)) {
@@ -441,6 +441,8 @@ struct ActionButton: View {
     let active: Bool
     let activeColor: Color
     let action: () -> Void
+    
+    var  rotates: Bool = false
 
     var body: some View {
         Button(action: action) {
@@ -448,6 +450,7 @@ struct ActionButton: View {
                 Image(systemName: icon)
                     .contentTransition(.symbolEffect(.replace))
                     .symbolEffect(.bounce, value: active)
+                    .rotationEffect(.degrees(rotates && active ? 180 : 0))
                 Text(count.formatted())
                     .font(.system(size: 14))
                     .contentTransition(.numericText())
